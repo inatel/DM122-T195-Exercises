@@ -1,8 +1,8 @@
 'use strict'
 
-async function fetchFromNetwork(url) {
-  const response = await fetch(url)
-  addToCache(url, response.clone())
+async function fetchFromNetwork(endpoint) {
+  const response = await fetch(endpoint)
+  addToCache(endpoint, response.clone())
   return await response.json()
 }
 
@@ -17,16 +17,16 @@ async function addToCache(key, response) {
   setCacheLifeSpan(cache, key)
 }
 
-async function fetchFromCache(url) {
-  const response = await caches.match(url)
-  const data = response && await response.json()
+async function fetchFromCache(endpoint) {
+  const response = await caches.match(endpoint)
+  const data = response && await response?.json()
   return data
 }
 
 const button = document.querySelector('button')
 button.addEventListener('click', async () => {
   const pre = document.querySelector('pre')
-  const url = 'https://api.github.com/users/edysegura'
-  const data = await fetchFromCache(url) || await fetchFromNetwork(url)
+  const endpoint = 'https://jsonplaceholder.typicode.com/todos/'
+  const data = await fetchFromCache(endpoint) || await fetchFromNetwork(endpoint)
   pre.textContent = JSON.stringify(data, null, 2)
 })
